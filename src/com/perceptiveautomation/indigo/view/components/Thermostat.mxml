@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:HGroup
+	xmlns:fx="http://ns.adobe.com/mxml/2009" 
+	xmlns:s="library://ns.adobe.com/flex/spark" 
+	xmlns:mx="library://ns.adobe.com/flex/mx" 
+	implements="mx.controls.listClasses.IListItemRenderer"
+	verticalAlign="middle"
+	horizontalAlign="left"
+	width="100%"
+	>
+	
+	<fx:Script>
+		<![CDATA[
+			import com.perceptiveautomation.indigo.device.IIndigoDevice;
+			import com.perceptiveautomation.indigo.device.events.IndigoDeviceActionEvent;
+			import com.perceptiveautomation.indigo.model.IndigoModel;
+			import com.perceptiveautomation.indigo.vo.AbstractIndigoDevice;
+			import com.perceptiveautomation.indigo.vo.DimmableDevice;
+			import com.perceptiveautomation.indigo.vo.OnOffDevice;
+			import com.perceptiveautomation.indigo.vo.ThermostatDevice;
+			
+			import mx.controls.listClasses.IListItemRenderer;
+			
+			private var _device:AbstractIndigoDevice;
+			
+			[Bindable(event='deviceChanged')]
+			public function get device():AbstractIndigoDevice
+			{
+				return this._device;
+			}
+			
+			public function set device(value:AbstractIndigoDevice):void
+			{
+				if (this._device != value)
+				{
+					this._device = value;
+					
+					if (this._device)
+					{	
+						this.label = this._device.name;
+					}
+					
+					dispatchEvent(new Event('deviceChanged'));
+				}	
+			}
+			
+			[Bindable]
+			public var model:IndigoModel = IndigoModel.getInstance();
+			
+			private function tempDown():void
+			{
+				//setOffColors();
+				if (device is ThermostatDevice)
+				{ 
+					ThermostatDevice(device).heatSetpoint --;
+					new IndigoDeviceActionEvent(IndigoDeviceActionEvent.TURN_OFF, device.name, 0).dispatch();
+					model.indigoDeviceList.refresh();
+				}
+			}
+			
+			private function tempUp():void
+			{
+				//setOnColors();
+				if (device is ThermostatDevice) 
+				{
+					ThermostatDevice(device).turnOn();
+					new IndigoDeviceActionEvent(IndigoDeviceActionEvent.TURN_ON, device.name, 0).dispatch();
+					model.indigoDeviceList.refresh();
+				}	
+			}
+		
+			
+			public function set label(value:String):void
+			{
+				//super.label = value;
+				if (lblName) 
+					lblName.text = value;
+			}
+			
+			public function get data():Object
+			{
+				return this.device;
+			}
+			
+			public function set data(value:Object):void
+			{
+				if (value is AbstractIndigoDevice)
+				{
+					this.device = value as AbstractIndigoDevice;
+				}	
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<s:Label id="lblName" text="{this.device.name}" width="140" fontWeight="bold" fontSize="11"/>
+	
+	<s:Button 
+		id="btnTempUp" 
+		width="24"
+		click="tempUp();"/>
+	
+	<s:Button 
+		id="btnTempDown" 
+		width="24"
+		click="tempDown();"/>
+	
+</s:HGroup>
