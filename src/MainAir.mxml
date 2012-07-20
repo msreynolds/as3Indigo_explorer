@@ -3,6 +3,7 @@
 					   xmlns:s="library://ns.adobe.com/flex/spark" 
 					   xmlns:mx="library://ns.adobe.com/flex/mx"
                        xmlns:indigocontrol="com.perceptiveautomation.indigo.control.*"
+                       xmlns:components="com.pfp.components.*"
                        width="1180"
                        height="748"
                        title="AS3Indigo Explorer v1.0"
@@ -14,6 +15,8 @@
         import com.perceptiveautomation.indigo.model.IndigoModel;
         import com.perceptiveautomation.indigo.vo.IndigoLoginData;
 
+        import spark.events.ListEvent;
+
         [Bindable]
         protected var indigoModel:IndigoModel = IndigoModel.getInstance();
 
@@ -21,7 +24,10 @@
         protected var indigoLoginData:IndigoLoginData = new IndigoLoginData("localhost");
 
         protected function creationComplete():void {
-
+            listIndigoDevices.addEventListener("showItemDetail", list_doubleClickHandler)
+            listIndigoVariables.addEventListener("showItemDetail", list_doubleClickHandler)
+            listIndigoActionGroups.addEventListener("showItemDetail", list_doubleClickHandler)
+            listIndigoTriggers.addEventListener("showItemDetail", list_doubleClickHandler)
         }
 
         protected function btnIndigoConnect_clickHandler(event:MouseEvent):void {
@@ -29,6 +35,13 @@
 
         }
 
+        protected function list_doubleClickHandler(event:ListEvent):void {
+            currentState = "Detail";
+        }
+
+        private function btnBackToMaster_clickHandler(event:MouseEvent):void {
+            currentState = "Master";
+        }
         ]]></fx:Script>
 
     <s:layout>
@@ -41,41 +54,104 @@
 
     </fx:Declarations>
 
+    <s:states>
+        <s:State name="Master"/>
+        <s:State name="Detail"/>
+    </s:states>
+
     <s:Label text="Indigo Server"/>
 
-    <s:HGroup horizontalCenter="0">
-        <!-- Indigo Login Data Fields -->
-        <s:TextInput id="tiIndigoServerAddress" width="135" prompt="Indigo Server Address" text="{indigoLoginData.host}"/>
-        <s:TextInput id="tiIndigoServerPort" width="60" prompt="Port" text="{indigoLoginData.port}"/>
-        <s:Button id="btnIndigoConnect" click="btnIndigoConnect_clickHandler(event)" label="Go!"/>
+    <s:HGroup horizontalAlign="center" width="100%">
+
+        <s:HGroup horizontalAlign="left" width="25%" paddingLeft="25">
+
+            <s:Button id="btnBackToMaster"
+                      visible="false"
+                      visible.Detail="true"
+                      label="Back"
+                      click="btnBackToMaster_clickHandler(event)"/>
+
+        </s:HGroup>
+
+        <s:HGroup horizontalAlign="center" width="50%">
+            <!-- Indigo Login Data Fields -->
+            <s:TextInput id="tiIndigoServerAddress" width="135" prompt="Indigo Server Address" text="{indigoLoginData.host}"/>
+            <s:TextInput id="tiIndigoServerPort" width="60" prompt="Port" text="{indigoLoginData.port}"/>
+            <s:Button id="btnIndigoConnect" click="btnIndigoConnect_clickHandler(event)" label="Go!"/>
+        </s:HGroup>
+
+        <s:HGroup horizontalAlign="left" width="25%" paddingRight="25"/>
 
     </s:HGroup>
 
-    <s:Spacer height="14"/>
+    <s:Spacer height="21"/>
 
-    <s:HGroup horizontalCenter="0" width="100%" paddingLeft="25" paddingRight="25">
+    <s:HGroup id="hgroupMasterContentGroup"
+              name="master"
+              visible="true"
+              includeInLayout="true"
+              visible.Detail="false"
+              includeInLayout.Detail="false"
+              horizontalCenter="0"
+              width="100%"
+              paddingLeft="25"
+              paddingRight="25">
 
-        <s:VGroup>
-            <s:Label text="Indigo Devices"/>
+        <s:VGroup width="25%">
+            <s:Label text="{'Indigo Devices (' + listIndigoDevices.dataProvider.length + ')'}"/>
             <s:List id="listIndigoDevices"
                     dataProvider="{indigoModel.indigoDeviceList}"
                     itemRenderer="com.perceptiveautomation.indigo.view.components.IndigoDeviceListItemRenderer"
-                    width="200"
+                    doubleClickEnabled="true"
+                    width="100%"
                     height="400"
-                    left="20"
                     />
         </s:VGroup>
 
-        <s:VGroup>
-            <s:Label text="Indigo Variables"/>
+        <s:VGroup width="25%">
+            <s:Label text="{'Indigo Variables (' + listIndigoVariables.dataProvider.length + ')'}"/>
             <s:List id="listIndigoVariables"
                     dataProvider="{indigoModel.indigoVariableList}"
                     itemRenderer="com.perceptiveautomation.indigo.view.components.IndigoVariableListItemRenderer"
-                    width="200"
+                    width="100%"
                     height="400"
-                    left="20"
                     />
         </s:VGroup>
+
+        <s:VGroup width="25%">
+            <s:Label text="{'Indigo Action Groups (' + listIndigoActionGroups.dataProvider.length + ')'}"/>
+            <s:List id="listIndigoActionGroups"
+                    dataProvider="{indigoModel.indigoActionGroupList}"
+                    itemRenderer="com.perceptiveautomation.indigo.view.components.IndigoActionGroupListItemRenderer"
+                    width="100%"
+                    height="400"
+                    />
+        </s:VGroup>
+
+        <s:VGroup width="25%">
+            <s:Label text="{'Indigo Triggers (' + listIndigoTriggers.dataProvider.length + ')'}"/>
+            <s:List id="listIndigoTriggers"
+                    dataProvider="{indigoModel.indigoTimeDateTriggerList}"
+                    itemRenderer="com.perceptiveautomation.indigo.view.components.IndigoTriggerListItemRenderer"
+                    width="100%"
+                    height="400"
+                    />
+        </s:VGroup>
+
+    </s:HGroup>
+
+    <s:HGroup id="hgroupDetailContentGroup"
+              name="detail"
+              visible="false"
+              includeInLayout="false"
+              visible.Detail="true"
+              includeInLayout.Detail="true"
+              horizontalCenter="0"
+              width="100%"
+              height="{hgroupMasterContentGroup.height}"
+              paddingLeft="25"
+              paddingRight="25">
+
 
     </s:HGroup>
 

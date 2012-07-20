@@ -8,9 +8,12 @@
 package com.perceptiveautomation.indigo.view.components {
 import com.perceptiveautomation.indigo.device.IIndigoDevice;
 
+import flash.events.MouseEvent;
+
 import spark.components.Label;
 
 import spark.components.supportClasses.ItemRenderer;
+import spark.events.ListEvent;
 
 public class IndigoDeviceListItemRenderer extends ItemRenderer {
 
@@ -22,6 +25,8 @@ public class IndigoDeviceListItemRenderer extends ItemRenderer {
 
     public function IndigoDeviceListItemRenderer() {
         this.height = 28;
+        this.doubleClickEnabled = true;
+        this.addEventListener(MouseEvent.DOUBLE_CLICK, handleMouseDoubleClick);
     }
 
     override public function set data(value:Object):void {
@@ -49,6 +54,10 @@ public class IndigoDeviceListItemRenderer extends ItemRenderer {
 
     }
 
+    private function handleMouseDoubleClick(event:MouseEvent):void {
+        var listEvent:ListEvent = new ListEvent("showItemDetail",false,false,NaN,NaN,null,false,false,false,false,0,-1,this.data, this);
+        this.owner.dispatchEvent(listEvent);
+    }
 }
 
 }

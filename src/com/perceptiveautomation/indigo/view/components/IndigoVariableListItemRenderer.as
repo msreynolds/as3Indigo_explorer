@@ -9,9 +9,12 @@ package com.perceptiveautomation.indigo.view.components {
 import com.perceptiveautomation.indigo.device.IIndigoDevice;
 import com.perceptiveautomation.indigo.variable.IIndigoVariable;
 
+import flash.events.MouseEvent;
+
 import spark.components.Label;
 
 import spark.components.supportClasses.ItemRenderer;
+import spark.events.ListEvent;
 
 public class IndigoVariableListItemRenderer extends ItemRenderer {
 
@@ -23,6 +26,8 @@ public class IndigoVariableListItemRenderer extends ItemRenderer {
 
     public function IndigoVariableListItemRenderer() {
         this.height = 28;
+        this.doubleClickEnabled = true;
+        this.addEventListener(MouseEvent.DOUBLE_CLICK, handleMouseDoubleClick);
     }
 
     override public function set data(value:Object):void {
@@ -57,6 +62,11 @@ public class IndigoVariableListItemRenderer extends ItemRenderer {
         _labelVariableName.text = (_indigoVariable !== null) ?_indigoVariable.name : "Name Not Available";
         _labelVariableValue.text = (_indigoVariable !== null) ?_indigoVariable.value.toString() : "-";
 
+    }
+
+    private function handleMouseDoubleClick(event:MouseEvent):void {
+        var listEvent:ListEvent = new ListEvent("showItemDetail",false,false,NaN,NaN,null,false,false,false,false,0,-1,this.data, this);
+        this.owner.dispatchEvent(listEvent);
     }
 
 }
