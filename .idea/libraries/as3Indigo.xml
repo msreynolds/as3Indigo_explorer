@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="as3Indigo" type="flex">
+    <CLASSES>
+      <root url="file://$PROJECT_DIR$/../as3Indigo/bin" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+    <jarDirectory url="file://$PROJECT_DIR$/../as3Indigo/bin" recursive="false" />
+  </library>
+</component>
