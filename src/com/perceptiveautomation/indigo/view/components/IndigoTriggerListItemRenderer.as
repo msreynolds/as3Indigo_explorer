@@ -6,7 +6,7 @@
  * To change this template use File | Settings | File Templates.
  */
 package com.perceptiveautomation.indigo.view.components {
-import com.perceptiveautomation.indigo.trigger.IIndigoTimeDateTrigger;
+import com.perceptiveautomation.indigo.trigger.IIndigoTrigger;
 
 import flash.events.MouseEvent;
 
@@ -14,14 +14,14 @@ import spark.components.Label;
 import spark.components.supportClasses.ItemRenderer;
 import spark.events.ListEvent;
 
-public class IndigoTriggerListItemRenderer extends ItemRenderer{
+public class IndigoTriggerListItemRenderer extends ItemRenderer {
 
     // Child Display Objects
     private var _labelTriggerName:Label;
     private var _labelTriggerFolder:Label;
     private var _labelTriggerType:Label;
 
-    private var _indigoTrigger:IIndigoTimeDateTrigger;
+    private var _indigoTrigger:IIndigoTrigger;
 
     public function IndigoTriggerListItemRenderer() {
         this.height = 28;
@@ -31,8 +31,8 @@ public class IndigoTriggerListItemRenderer extends ItemRenderer{
 
     override public function set data(value:Object):void {
 
-        if (value is IIndigoTimeDateTrigger) {
-            _indigoTrigger = value as IIndigoTimeDateTrigger;
+        if (value is IIndigoTrigger) {
+            _indigoTrigger = value as IIndigoTrigger;
         }
     }
 

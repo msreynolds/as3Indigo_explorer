@@ -1,17 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<s:WindowedApplication xmlns:fx="http://ns.adobe.com/mxml/2009" 
-					   xmlns:s="library://ns.adobe.com/flex/spark" 
-					   xmlns:mx="library://ns.adobe.com/flex/mx"
-                       xmlns:indigocontrol="com.perceptiveautomation.indigo.control.*"
-                       xmlns:components="com.pfp.components.*"
+<s:WindowedApplication xmlns:fx="http://ns.adobe.com/mxml/2009"
+                       xmlns:s="library://ns.adobe.com/flex/spark"
+                       xmlns:mx="library://ns.adobe.com/flex/mx"
+                       xmlns:model="com.perceptiveautomation.indigo.model.*"
+                       xmlns:services="com.perceptiveautomation.indigo.services.*"
                        width="1180"
                        height="748"
                        title="AS3Indigo Explorer v1.0"
                        creationComplete="creationComplete()"
-                       >
+        >
 
     <fx:Script><![CDATA[
-        import com.perceptiveautomation.indigo.events.IndigoConnectEvent;
         import com.perceptiveautomation.indigo.model.IndigoModel;
         import com.perceptiveautomation.indigo.vo.IndigoLoginData;
 
@@ -23,34 +22,38 @@
         [Bindable]
         protected var indigoLoginData:IndigoLoginData = new IndigoLoginData("localhost");
 
-        protected function creationComplete():void {
-            listIndigoDevices.addEventListener("showItemDetail", list_doubleClickHandler)
-            listIndigoVariables.addEventListener("showItemDetail", list_doubleClickHandler)
-            listIndigoActionGroups.addEventListener("showItemDetail", list_doubleClickHandler)
-            listIndigoTriggers.addEventListener("showItemDetail", list_doubleClickHandler)
+        protected function creationComplete():void
+        {
+            listIndigoDevices.addEventListener("showItemDetail", list_doubleClickHandler);
+            listIndigoVariables.addEventListener("showItemDetail", list_doubleClickHandler);
+            listIndigoActionGroups.addEventListener("showItemDetail", list_doubleClickHandler);
+            listIndigoTriggers.addEventListener("showItemDetail", list_doubleClickHandler);
         }
 
-        protected function btnIndigoConnect_clickHandler(event:MouseEvent):void {
-            new IndigoConnectEvent(indigoLoginData).dispatch();
-
+        protected function btnIndigoConnect_clickHandler(event:MouseEvent):void
+        {
+            indigoService.connect(indigoLoginData);
         }
 
-        protected function list_doubleClickHandler(event:ListEvent):void {
+        protected function list_doubleClickHandler(event:ListEvent):void
+        {
             currentState = "Detail";
         }
 
-        private function btnBackToMaster_clickHandler(event:MouseEvent):void {
+        private function btnBackToMaster_clickHandler(event:MouseEvent):void
+        {
             currentState = "Master";
         }
-        ]]></fx:Script>
+    ]]></fx:Script>
 
     <s:layout>
         <s:VerticalLayout horizontalAlign="center" verticalAlign="middle"/>
     </s:layout>
 
 	<fx:Declarations>
-		<!-- Place non-visual elements (e.g., services, value objects) here -->
-        <indigocontrol:IndigoController id="controllerIndigo" />
+
+        <!-- Place non-visual elements (e.g., services, value objects) here -->
+        <services:IndigoService id="indigoService"/>
 
     </fx:Declarations>
 
@@ -97,7 +100,7 @@
               paddingLeft="25"
               paddingRight="25">
 
-        <s:VGroup width="25%">
+        <s:VGroup width="20%">
             <s:Label text="{'Indigo Devices (' + listIndigoDevices.dataProvider.length + ')'}"/>
             <s:List id="listIndigoDevices"
                     dataProvider="{indigoModel.indigoDeviceList}"
@@ -108,7 +111,7 @@
                     />
         </s:VGroup>
 
-        <s:VGroup width="25%">
+        <s:VGroup width="20%">
             <s:Label text="{'Indigo Variables (' + listIndigoVariables.dataProvider.length + ')'}"/>
             <s:List id="listIndigoVariables"
                     dataProvider="{indigoModel.indigoVariableList}"
@@ -118,7 +121,7 @@
                     />
         </s:VGroup>
 
-        <s:VGroup width="25%">
+        <s:VGroup width="20%">
             <s:Label text="{'Indigo Action Groups (' + listIndigoActionGroups.dataProvider.length + ')'}"/>
             <s:List id="listIndigoActionGroups"
                     dataProvider="{indigoModel.indigoActionGroupList}"
@@ -128,10 +131,20 @@
                     />
         </s:VGroup>
 
-        <s:VGroup width="25%">
+        <s:VGroup width="20%">
+            <s:Label text="{'Indigo Schedules (' + listIndigoSchedules.dataProvider.length + ')'}"/>
+            <s:List id="listIndigoSchedules"
+                    dataProvider="{indigoModel.indigoScheduleList}"
+                    itemRenderer="com.perceptiveautomation.indigo.view.components.IndigoScheduleListItemRenderer"
+                    width="100%"
+                    height="400"
+                    />
+        </s:VGroup>
+
+        <s:VGroup width="20%">
             <s:Label text="{'Indigo Triggers (' + listIndigoTriggers.dataProvider.length + ')'}"/>
             <s:List id="listIndigoTriggers"
-                    dataProvider="{indigoModel.indigoTimeDateTriggerList}"
+                    dataProvider="{indigoModel.indigoTriggerList}"
                     itemRenderer="com.perceptiveautomation.indigo.view.components.IndigoTriggerListItemRenderer"
                     width="100%"
                     height="400"
