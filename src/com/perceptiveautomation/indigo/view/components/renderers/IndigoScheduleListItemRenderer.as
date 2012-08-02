@@ -5,7 +5,7 @@
  * Time: 9:53 PM
  * To change this template use File | Settings | File Templates.
  */
-package com.perceptiveautomation.indigo.view.components {
+package com.perceptiveautomation.indigo.view.components.renderers {
 import com.perceptiveautomation.indigo.schedule.IIndigoSchedule;
 
 import flash.events.MouseEvent;

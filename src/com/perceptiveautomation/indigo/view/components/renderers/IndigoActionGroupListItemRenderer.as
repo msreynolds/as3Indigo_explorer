@@ -5,7 +5,7 @@
  * Time: 10:25 PM
  * To change this template use File | Settings | File Templates.
  */
-package com.perceptiveautomation.indigo.view.components {
+package com.perceptiveautomation.indigo.view.components.renderers {
 import com.perceptiveautomation.indigo.actiongroup.IIndigoActionGroup;
 
 import flash.events.MouseEvent;
@@ -18,8 +18,8 @@ public class IndigoActionGroupListItemRenderer extends ItemRenderer {
 
     // Child Display Objects
     private var _labelActionGroupName:Label;
-    private var _labelActionGroupDescription:Label;
-    private var _labelActionGroupFolder:Label;
+    //private var _labelActionGroupDescription:Label;
+    //private var _labelActionGroupFolder:Label;
 
     private var _indigoActionGroup:IIndigoActionGroup;
 
@@ -47,29 +47,32 @@ public class IndigoActionGroupListItemRenderer extends ItemRenderer {
             this.addElement( _labelActionGroupName );
         }
 
-        if (!_labelActionGroupDescription) {
-            _labelActionGroupDescription = new Label();
-            _labelActionGroupDescription.text = (_indigoActionGroup !== null) ? _indigoActionGroup.description : "-";
-            _labelActionGroupDescription.horizontalCenter = 0;
-            _labelActionGroupDescription.top = 9;
-            this.addElement( _labelActionGroupDescription );
-        }
+//        if (!_labelActionGroupDescription) {
+//            _labelActionGroupDescription = new Label();
+//            _labelActionGroupDescription.text = (_indigoActionGroup !== null) ? _indigoActionGroup.description : "-";
+//            _labelActionGroupDescription.horizontalCenter = 0;
+//            _labelActionGroupDescription.top = 9;
+//            this.addElement( _labelActionGroupDescription );
+//        }
 
-        if (!_labelActionGroupFolder) {
-            _labelActionGroupFolder = new Label();
-            _labelActionGroupFolder.text = (_indigoActionGroup !== null) ? _indigoActionGroup.folder : "-";
-            _labelActionGroupFolder.right = 7;
-            _labelActionGroupFolder.top = 9;
-            this.addElement( _labelActionGroupFolder );
-        }
+//        if (!_labelActionGroupFolder) {
+//            _labelActionGroupFolder = new Label();
+//            _labelActionGroupFolder.text = (_indigoActionGroup !== null) ? _indigoActionGroup.folder : "-";
+//            _labelActionGroupFolder.right = 7;
+//            _labelActionGroupFolder.top = 9;
+//            this.addElement( _labelActionGroupFolder );
+//        }
 
     }
 
     override protected function commitProperties():void {
         super.commitProperties();
-        _labelActionGroupName.text = (_indigoActionGroup !== null) ? _indigoActionGroup.name : "Name Not Available";
-        _labelActionGroupDescription.text = (_indigoActionGroup !== null) ? _indigoActionGroup.description : "-";
-        _labelActionGroupFolder.text = (_indigoActionGroup !== null) ? _indigoActionGroup.folder : "-";
+
+        this.toolTip = (_indigoActionGroup !== null && _indigoActionGroup.description != "") ? _indigoActionGroup.description : "no description provided";
+
+        _labelActionGroupName.text = (_indigoActionGroup !== null) ? _indigoActionGroup.name : "-";
+//        _labelActionGroupDescription.text = (_indigoActionGroup !== null) ? _indigoActionGroup.description : "-";
+//        _labelActionGroupFolder.text = (_indigoActionGroup !== null) ? _indigoActionGroup.folder : "-";
 
     }
 
