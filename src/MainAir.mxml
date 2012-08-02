@@ -104,7 +104,7 @@
             <s:Label text="{'Indigo Devices (' + listIndigoDevices.dataProvider.length + ')'}"/>
             <s:List id="listIndigoDevices"
                     dataProvider="{indigoModel.indigoDeviceList}"
-                    itemRenderer="com.perceptiveautomation.indigo.view.components.IndigoDeviceListItemRenderer"
+                    itemRenderer="com.perceptiveautomation.indigo.view.components.renderers.IndigoDeviceListItemRenderer"
                     doubleClickEnabled="true"
                     width="100%"
                     height="400"
@@ -115,7 +115,7 @@
             <s:Label text="{'Indigo Variables (' + listIndigoVariables.dataProvider.length + ')'}"/>
             <s:List id="listIndigoVariables"
                     dataProvider="{indigoModel.indigoVariableList}"
-                    itemRenderer="com.perceptiveautomation.indigo.view.components.IndigoVariableListItemRenderer"
+                    itemRenderer="com.perceptiveautomation.indigo.view.components.renderers.IndigoVariableListItemRenderer"
                     width="100%"
                     height="400"
                     />
@@ -125,7 +125,7 @@
             <s:Label text="{'Indigo Action Groups (' + listIndigoActionGroups.dataProvider.length + ')'}"/>
             <s:List id="listIndigoActionGroups"
                     dataProvider="{indigoModel.indigoActionGroupList}"
-                    itemRenderer="com.perceptiveautomation.indigo.view.components.IndigoActionGroupListItemRenderer"
+                    itemRenderer="com.perceptiveautomation.indigo.view.components.renderers.IndigoActionGroupListItemRenderer"
                     width="100%"
                     height="400"
                     />
@@ -135,7 +135,7 @@
             <s:Label text="{'Indigo Schedules (' + listIndigoSchedules.dataProvider.length + ')'}"/>
             <s:List id="listIndigoSchedules"
                     dataProvider="{indigoModel.indigoScheduleList}"
-                    itemRenderer="com.perceptiveautomation.indigo.view.components.IndigoScheduleListItemRenderer"
+                    itemRenderer="com.perceptiveautomation.indigo.view.components.renderers.IndigoScheduleListItemRenderer"
                     width="100%"
                     height="400"
                     />
@@ -145,7 +145,7 @@
             <s:Label text="{'Indigo Triggers (' + listIndigoTriggers.dataProvider.length + ')'}"/>
             <s:List id="listIndigoTriggers"
                     dataProvider="{indigoModel.indigoTriggerList}"
-                    itemRenderer="com.perceptiveautomation.indigo.view.components.IndigoTriggerListItemRenderer"
+                    itemRenderer="com.perceptiveautomation.indigo.view.components.renderers.IndigoTriggerListItemRenderer"
                     width="100%"
                     height="400"
                     />
@@ -169,12 +169,21 @@
     </s:HGroup>
 
     <s:HGroup horizontalCenter="0" width="100%" paddingLeft="25" paddingRight="25">
+        <s:TextArea id="taIndigoLog"
+                    editable="false"
+                    selectable="true"
+                    text="{indigoModel.indigoLogStream.toString()}"
+                    borderVisible="true"
+                    verticalScrollPolicy="on"
+                    width="30%"
+                    height="200"
+                />
         <s:TextArea id="taIndigoPackets"
                     editable="false"
                     selectable="true"
                     borderVisible="true"
                     verticalScrollPolicy="on"
-                    width="100%"
+                    width="70%"
                     height="200"
                     />
     </s:HGroup>
