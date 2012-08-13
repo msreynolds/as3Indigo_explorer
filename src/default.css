@@ -1,25 +1,8 @@
 /* CSS file */
 
-		.offButtonStyle 
-		{
-		   font-size: 16;
-		   fillAlphas: 0.81, 0.88, 0.75, 0.2;
-		   fillColors: #000000, #333333, #666666, #999999;
-		   color: #999999;
-		   textRollOverColor: #000000;
-		   textSelectedColor: #FFFFFF;
-		   themeColor: #ff0000;
-		   cornerRadius: 5;
-		}
+@namespace s "library://ns.adobe.com/flex/spark";
 
-		.onButtonStyle 
-		{
-		   font-size: 16;
-		   fillAlphas: 0.81, 0.88, 0.75, 0.2;
-		   fillColors: #00FF00, #009900, #AAAAAA, #FFFFFF;
-		   color: #999999;
-		   textRollOverColor: #000000;
-		   textSelectedColor: #FFFFFF;
-		   themeColor: #009933;
-		   cornerRadius: 5;
-		}
+s|Button.linkButton
+{
+    skinClass:ClassReference("com.perceptiveautomation.indigo.view.component.button.skin.LinkButtonSkin");
+}

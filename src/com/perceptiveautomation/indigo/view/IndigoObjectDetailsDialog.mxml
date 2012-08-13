@@ -1,0 +1,205 @@
+<?xml version="1.0"?>
+<s:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009"
+               xmlns:s="library://ns.adobe.com/flex/spark"
+               xmlns:mx="library://ns.adobe.com/flex/mx"
+               title="{indigoObject.name}"
+               creationComplete="creationCompleteHandler(event)"
+               >
+
+    <fx:Script>
+        <![CDATA[
+        import com.perceptiveautomation.indigo.IIndigoObject;
+        import com.perceptiveautomation.indigo.actiongroup.IIndigoActionGroup;
+        import com.perceptiveautomation.indigo.device.IIndigoDimmerDevice;
+        import com.perceptiveautomation.indigo.device.IIndigoOnOffDevice;
+        import com.perceptiveautomation.indigo.device.IIndigoOnOffDevice;
+        import com.perceptiveautomation.indigo.device.IIndigoThermostatDevice;
+        import com.perceptiveautomation.indigo.model.IndigoModel;
+        import com.perceptiveautomation.indigo.services.IndigoService;
+        import com.perceptiveautomation.indigo.trigger.IIndigoTrigger;
+        import com.perceptiveautomation.indigo.variable.IIndigoVariable;
+
+        import mx.events.FlexEvent;
+
+        private var _indigoService:IndigoService;
+
+        [Bindable(event="indigoServiceChanged")]
+        public function get indigoService():IndigoService
+        {
+            return _indigoService;
+        }
+
+        public function set indigoService(value:IndigoService):void
+        {
+            if (_indigoService == value)
+            {
+                return;
+            }
+            _indigoService = value;
+            dispatchEvent(new Event("indigoServiceChanged"));
+        }
+
+        private var _indigoObject:IIndigoObject;
+
+        [Bindable(event="indigoObjectChanged")]
+        public function get indigoObject():IIndigoObject
+        {
+            return _indigoObject;
+        }
+
+        public function set indigoObject(value:IIndigoObject):void
+        {
+            if (_indigoObject == value)
+            {
+                return;
+            }
+            _indigoObject = value;
+            updateView();
+            dispatchEvent(new Event("indigoObjectChanged"));
+        }
+
+        protected function updateView():void
+        {
+            if (indigoObject is IIndigoDimmerDevice)
+            {
+                currentState = "dimmerdevice";
+                if (hslideDimmerValue != null)
+                    hslideDimmerValue.value = IIndigoDimmerDevice(indigoObject).brightness;
+
+                return;
+            }
+
+            if (indigoObject is IIndigoThermostatDevice)
+            {
+                currentState = "thermostatdevice";
+                return;
+            }
+
+            if (indigoObject is IIndigoOnOffDevice)
+            {
+                currentState = "onoffdevice";
+                return;
+            }
+
+            if (indigoObject is IIndigoVariable)
+            {
+                currentState = "variable";
+
+                if (lblVariableName)
+                    lblVariableName.text = IIndigoVariable(indigoObject).name;
+
+                if (tiVariableValue)
+                    tiVariableValue.text = IIndigoVariable(indigoObject).value.toString();
+
+                return;
+            }
+
+            if (indigoObject is IIndigoActionGroup)
+            {
+                currentState = "actiongroup";
+                return;
+            }
+
+            if (indigoObject is IIndigoTrigger)
+            {
+                currentState = "trigger";
+                return;
+            }
+
+        }
+
+        protected function btnOff_clickHandler(event:MouseEvent):void
+        {
+            IIndigoOnOffDevice(indigoObject).turnOff();
+            if (hslideDimmerValue !== null)
+                hslideDimmerValue.value = 0;
+        }
+
+        protected function btnOn_clickHandler(event:MouseEvent):void
+        {
+            IIndigoOnOffDevice(indigoObject).turnOn();
+            if (hslideDimmerValue !== null)
+                hslideDimmerValue.value = 100;
+        }
+
+        protected function hslideDimmerValue_clickHandler(event:MouseEvent):void
+        {
+            IIndigoDimmerDevice(indigoObject).brightness = hslideDimmerValue.value;
+        }
+
+        protected function btnSaveVariable_clickHandler(event:MouseEvent):void
+        {
+            IIndigoVariable(indigoObject).value = tiVariableValue.text;
+        }
+
+        protected function creationCompleteHandler(event:FlexEvent):void
+        {
+            updateView();
+        }
+        ]]>
+    </fx:Script>
+
+    <fx:Declarations>
+
+    </fx:Declarations>
+
+    <s:states>
+        <s:State name="actiongroup"/>
+        <s:State name="dimmerdevice"/>
+        <s:State name="onoffdevice"/>
+        <s:State name="thermostatdevice"/>
+        <s:State name="schedule"/>
+        <s:State name="trigger"/>
+        <s:State name="variable"/>
+    </s:states>
+
+    <s:VGroup id="vGroupComponents"
+              verticalAlign="middle"
+              horizontalAlign="center"
+              width="100%"
+              height="100%"
+              paddingLeft="14"
+              paddingRight="14"
+              paddingTop="14"
+              paddingBottom="14"
+              >
+
+        <s:HGroup width="100%" horizontalAlign="center" includeIn="dimmerdevice,onoffdevice">
+            <s:Button id="btnOff"
+                      label="Off"
+                      click="btnOff_clickHandler(event)"
+                    />
+            <s:Button id="btnOn"
+                      label="On"
+                      click="btnOn_clickHandler(event)"
+                    />
+        </s:HGroup>
+
+        <s:HSlider id="hslideDimmerValue"
+                   click="hslideDimmerValue_clickHandler(event)"
+                   width="100%"
+                   minimum="0"
+                   maximum="100"
+                   horizontalCenter="0"
+                   includeIn="dimmerdevice"
+                />
+
+        <s:Label id="lblVariableName"
+                 includeIn="variable"
+                 />
+
+        <s:HGroup includeIn="variable">
+            <s:TextInput id="tiVariableValue"
+                         includeIn="variable"
+                         />
+
+            <s:Button id="btnSaveVariable"
+                      includeIn="variable"
+                      label="Save"
+                      click="btnSaveVariable_clickHandler(event)"
+                      />
+        </s:HGroup>
+
+    </s:VGroup>
+
+</s:TitleWindow>

@@ -12,8 +12,27 @@
         >
 
     <fx:Script><![CDATA[
+        import com.mtnlabs.graphics.MountainLabsGraphics;
+        import com.perceptiveautomation.indigo.IIndigoObject;
+        import com.perceptiveautomation.indigo.actiongroup.IIndigoActionGroup;
+        import com.perceptiveautomation.indigo.device.IIndigoDimmerDevice;
+        import com.perceptiveautomation.indigo.device.IIndigoOnOffDevice;
+        import com.perceptiveautomation.indigo.device.IIndigoThermostatDevice;
         import com.perceptiveautomation.indigo.model.IndigoModel;
+        import com.perceptiveautomation.indigo.trigger.IIndigoTrigger;
+        import com.perceptiveautomation.indigo.variable.IIndigoVariable;
+        import com.perceptiveautomation.indigo.view.IndigoObjectDetailsDialog;
         import com.perceptiveautomation.indigo.vo.IndigoLoginData;
+
+        import mx.collections.ArrayCollection;
+
+        import mx.events.CloseEvent;
+
+        import mx.events.FlexEvent;
+
+        import mx.managers.PopUpManager;
+
+        import spark.components.Application;
 
         import spark.events.ListEvent;
 
@@ -38,14 +57,62 @@
 
         protected function list_doubleClickHandler(event:ListEvent):void
         {
-            currentState = "Detail";
+            var popupView:IndigoObjectDetailsDialog = new IndigoObjectDetailsDialog();
+            popupView.indigoObject = event.itemRenderer.data as IIndigoObject;
+            popupView.indigoService = indigoService;
+            popupView.addEventListener(CloseEvent.CLOSE, function (event:CloseEvent):void
+            {
+                PopUpManager.removePopUp(popupView);
+            });
+            PopUpManager.addPopUp(popupView, this, true);
+            PopUpManager.centerPopUp(popupView);
         }
 
-        private function btnBackToMaster_clickHandler(event:MouseEvent):void
+        protected function btnClearIncomingPackets_clickHandler(event:MouseEvent):void
         {
-            currentState = "Master";
+            this.indigoModel.packetStreamIncoming = "";
         }
-    ]]></fx:Script>
+
+        protected function btnClearOutgoingPackets_clickHandler(event:MouseEvent):void
+        {
+            this.indigoModel.packetStreamOutgoing = "";
+        }
+
+        private function btnClearLog_clickHandler(event:MouseEvent):void
+        {
+            this.indigoModel.logStream = "";
+        }
+
+
+        // Refresh Lists
+        protected function btnDevicesRefresh_clickHandler(event:MouseEvent):void
+        {
+            this.indigoService.refreshDevices();
+        }
+
+        protected function btnVariablesRefresh_clickHandler(event:MouseEvent):void
+        {
+            this.indigoService.refreshVariables();
+        }
+
+        protected function btnActionGroupsRefresh_clickHandler(event:MouseEvent):void
+        {
+            this.indigoService.refreshActionGroups();
+        }
+
+        protected function btnSchedulesRefresh_clickHandler(event:MouseEvent):void
+        {
+            this.indigoService.refreshSchedules();
+        }
+
+        protected function btnTriggersRefresh_clickHandler(event:MouseEvent):void
+        {
+            this.indigoService.refreshTriggers();
+        }
+
+        ]]></fx:Script>
+
+    <fx:Style source="default.css"/>
 
     <s:layout>
         <s:VerticalLayout horizontalAlign="center" verticalAlign="middle"/>
@@ -60,19 +127,21 @@
 
     <s:HGroup horizontalAlign="center" width="100%" paddingTop="25">
 
-        <s:HGroup horizontalAlign="left" width="25%" paddingLeft="25"/>
+        <!-- Indigo Login Data Fields -->
+        <s:HGroup horizontalAlign="right" verticalAlign="baseline">
+            <s:Label text="API" />
+            <s:DropDownList id="ddlAPIChoice"
+                            dataProvider="{new ArrayCollection(['Socket','RESTful'])}"
+                            selectedIndex="0"
+                            />
 
-        <s:HGroup horizontalAlign="center" verticalAlign="baseline" width="50%">
-            <!-- Indigo Login Data Fields -->
-            <!--<s:Label text="Indigo Server"/> -->
-            <s:TextInput id="tiUsername" width="80" prompt="Username" text="{indigoLoginData.username}"/>
-            <s:TextInput id="tiPassword" width="80" prompt="Password" text="{indigoLoginData.password}"/>
-            <s:TextInput id="tiIndigoServerAddress" width="135" prompt="Indigo Server Address" text="{indigoLoginData.host}"/>
-            <s:TextInput id="tiIndigoServerPort" width="48" prompt="Port" text="{indigoLoginData.port}"/>
-            <s:Button id="btnIndigoConnect" click="btnIndigoConnect_clickHandler(event)" label="Go!"/>
         </s:HGroup>
-
-        <s:HGroup horizontalAlign="left" width="25%" paddingRight="25"/>
+        <!--<s:Label text="Indigo Server"/> -->
+        <s:TextInput id="tiUsername" width="80" prompt="Username" text="{indigoLoginData.username}"/>
+        <s:TextInput id="tiPassword" width="80" prompt="Password" text="{indigoLoginData.password}"/>
+        <s:TextInput id="tiIndigoServerAddress" width="135" prompt="Indigo Server Address" text="{indigoLoginData.host}"/>
+        <s:TextInput id="tiIndigoServerPort" width="48" prompt="Port" text="{indigoLoginData.port}"/>
+        <s:Button id="btnIndigoConnect" click="btnIndigoConnect_clickHandler(event)" label="Go!"/>
 
     </s:HGroup>
 
@@ -87,10 +156,22 @@
               paddingRight="25">
 
         <s:VGroup width="20%" height="100%">
-            <s:Label text="{'Indigo Devices (' + listIndigoDevices.dataProvider.length + ')'}"/>
+            <s:HGroup width="100%" horizontalAlign="left" verticalAlign="baseline" paddingLeft="3" gap="3">
+                <s:Label text="{'Indigo Devices (' + listIndigoDevices.dataProvider.length + ')'}"/>
+                <s:Button id="btnDevicesRefresh"
+                          icon="{MountainLabsGraphics.iconArrowRefresh}"
+                          styleName="linkButton"
+                          width="21"
+                          height="21"
+                          baseline="6"
+                          toolTip="Refresh Device List"
+                          click="btnDevicesRefresh_clickHandler(event)"
+                          />
+            </s:HGroup>
+
             <s:List id="listIndigoDevices"
                     dataProvider="{indigoModel.deviceList}"
-                    itemRenderer="com.perceptiveautomation.indigo.view.components.renderers.IndigoDeviceListItemRenderer"
+                    itemRenderer="com.perceptiveautomation.indigo.device.view.IndigoDeviceListItemRenderer"
                     doubleClickEnabled="true"
                     width="100%"
                     height="100%"
@@ -98,40 +179,84 @@
         </s:VGroup>
 
         <s:VGroup width="20%" height="100%">
-            <s:Label text="{'Indigo Variables (' + listIndigoVariables.dataProvider.length + ')'}"/>
+            <s:HGroup width="100%" horizontalAlign="left" verticalAlign="baseline" paddingLeft="3" gap="3">
+                <s:Label text="{'Indigo Variables (' + listIndigoVariables.dataProvider.length + ')'}"/>
+                <s:Button id="btnVariablesRefresh"
+                          icon="{MountainLabsGraphics.iconArrowRefresh}"
+                          styleName="linkButton"
+                          width="21"
+                          height="21"
+                          baseline="6"
+                          toolTip="Refresh Variable List"
+                          click="btnVariablesRefresh_clickHandler(event)"
+                        />
+            </s:HGroup>
             <s:List id="listIndigoVariables"
                     dataProvider="{indigoModel.variableList}"
-                    itemRenderer="com.perceptiveautomation.indigo.view.components.renderers.IndigoVariableListItemRenderer"
+                    itemRenderer="com.perceptiveautomation.indigo.variable.view.IndigoVariableListItemRenderer"
                     width="100%"
                     height="100%"
                     />
         </s:VGroup>
 
         <s:VGroup width="20%" height="100%">
-            <s:Label text="{'Indigo Action Groups (' + listIndigoActionGroups.dataProvider.length + ')'}"/>
+            <s:HGroup width="100%" horizontalAlign="left" verticalAlign="baseline" paddingLeft="3" gap="3">
+                <s:Label text="{'Indigo Action Groups (' + listIndigoActionGroups.dataProvider.length + ')'}"/>
+                <s:Button id="btnActionGroupsRefresh"
+                          icon="{MountainLabsGraphics.iconArrowRefresh}"
+                          styleName="linkButton"
+                          width="21"
+                          height="21"
+                          baseline="6"
+                          toolTip="Refresh Action Group List"
+                          click="btnActionGroupsRefresh_clickHandler(event)"
+                        />
+            </s:HGroup>
             <s:List id="listIndigoActionGroups"
                     dataProvider="{indigoModel.actionGroupList}"
-                    itemRenderer="com.perceptiveautomation.indigo.view.components.renderers.IndigoActionGroupListItemRenderer"
+                    itemRenderer="com.perceptiveautomation.indigo.actiongroup.view.IndigoActionGroupListItemRenderer"
                     width="100%"
                     height="100%"
                     />
         </s:VGroup>
 
         <s:VGroup width="20%" height="100%">
-            <s:Label text="{'Indigo Schedules (' + listIndigoSchedules.dataProvider.length + ')'}"/>
+            <s:HGroup width="100%" horizontalAlign="left" verticalAlign="baseline" paddingLeft="3" gap="3">
+                <s:Label text="{'Indigo Schedules (' + listIndigoSchedules.dataProvider.length + ')'}"/>
+                <s:Button id="btnSchedulesRefresh"
+                          icon="{MountainLabsGraphics.iconArrowRefresh}"
+                          styleName="linkButton"
+                          width="21"
+                          height="21"
+                          baseline="6"
+                          toolTip="Refresh Schedule List"
+                          click="btnSchedulesRefresh_clickHandler(event)"
+                        />
+            </s:HGroup>
             <s:List id="listIndigoSchedules"
                     dataProvider="{indigoModel.scheduleList}"
-                    itemRenderer="com.perceptiveautomation.indigo.view.components.renderers.IndigoScheduleListItemRenderer"
+                    itemRenderer="com.perceptiveautomation.indigo.schedule.view.IndigoScheduleListItemRenderer"
                     width="100%"
                     height="100%"
                     />
         </s:VGroup>
 
         <s:VGroup width="20%" height="100%">
-            <s:Label text="{'Indigo Triggers (' + listIndigoTriggers.dataProvider.length + ')'}"/>
+            <s:HGroup width="100%" horizontalAlign="left" verticalAlign="baseline" paddingLeft="3" gap="3">
+                <s:Label text="{'Indigo Triggers (' + listIndigoTriggers.dataProvider.length + ')'}"/>
+                <s:Button id="btnTriggerRefresh"
+                          icon="{MountainLabsGraphics.iconArrowRefresh}"
+                          styleName="linkButton"
+                          width="21"
+                          height="21"
+                          baseline="6"
+                          toolTip="Refresh Trigger List"
+                          click="btnTriggersRefresh_clickHandler(event)"
+                        />
+            </s:HGroup>
             <s:List id="listIndigoTriggers"
                     dataProvider="{indigoModel.triggerList}"
-                    itemRenderer="com.perceptiveautomation.indigo.view.components.renderers.IndigoTriggerListItemRenderer"
+                    itemRenderer="com.perceptiveautomation.indigo.trigger.view.IndigoTriggerListItemRenderer"
                     width="100%"
                     height="100%"
                     />
@@ -143,10 +268,26 @@
 
     <s:HGroup horizontalCenter="0" width="100%" height="300" paddingLeft="25" paddingRight="25" paddingBottom="25">
 
-        <s:VGroup id="panelLog"
+        <s:VGroup id="vGroupLog"
                   width="300"
-                  height="100%">
-            <s:Label text="Indigo Log"/>
+                  height="100%"
+                  >
+
+            <s:HGroup width="100%" horizontalAlign="left" verticalAlign="baseline" paddingLeft="3" gap="3">
+
+                <s:Label text="Indigo Log"/>
+                <s:Button id="btnClearLog"
+                          icon="{MountainLabsGraphics.iconBinClosed}"
+                          styleName="linkButton"
+                          width="21"
+                          height="21"
+                          baseline="6"
+                          toolTip="Clear Log Window"
+                          click="btnClearLog_clickHandler(event)"
+                          />
+
+            </s:HGroup>
+
             <s:TextArea id="taIndigoLog"
                         editable="false"
                         selectable="true"
@@ -155,24 +296,68 @@
                         verticalScrollPolicy="on"
                         width="100%"
                         height="100%"
-                    />
+                        />
 
         </s:VGroup>
 
-        <s:VGroup id="panelPackets"
+        <s:VGroup id="vGroupOutgoingPackets"
                   width="100%"
                   height="100%">
 
-            <s:Label text="Indigo Packets"/>
-            <s:TextArea id="taIndigoPackets"
+            <s:HGroup width="100%" horizontalAlign="left" verticalAlign="baseline" paddingLeft="3" gap="3">
+
+                <s:Label text="Outgoing Indigo Packets"/>
+                <s:Button id="btnClearOutgoingPackets"
+                          icon="{MountainLabsGraphics.iconBinClosed}"
+                          styleName="linkButton"
+                          width="21"
+                          height="21"
+                          baseline="6"
+                          toolTip="Clear Outgoing Packets Window"
+                          click="btnClearOutgoingPackets_clickHandler(event)"
+                          />
+            </s:HGroup>
+            <s:TextArea id="taIndigoOutgoingPackets"
                         editable="false"
                         selectable="true"
-                        text="{indigoModel.packetStream}"
+                        text="{indigoModel.packetStreamOutgoing}"
+                        change="{taIndigoOutgoingPackets.scrollToRange(0,indigoModel.packetStreamOutgoing.length)}"
                         borderVisible="true"
                         verticalScrollPolicy="on"
                         width="100%"
                         height="100%"
                         />
+
+        </s:VGroup>
+
+        <s:VGroup id="vGroupIncomingPackets"
+                  width="100%"
+                  height="100%">
+
+            <s:HGroup width="100%" horizontalAlign="left" verticalAlign="baseline" paddingLeft="3" gap="3">
+
+                <s:Label text="Incoming Indigo Packets"/>
+                <s:Button id="btnClearPackets"
+                          icon="{MountainLabsGraphics.iconBinClosed}"
+                          styleName="linkButton"
+                          width="21"
+                          height="21"
+                          baseline="6"
+                          toolTip="Clear Incoming Packets Window"
+                          click="btnClearIncomingPackets_clickHandler(event)"
+                          />
+            </s:HGroup>
+            <s:TextArea id="taIndigoIncomingPackets"
+                        editable="false"
+                        selectable="true"
+                        text="{indigoModel.packetStreamIncoming}"
+                        change="{taIndigoIncomingPackets.scrollToRange(0,indigoModel.packetStreamIncoming.length)}"
+                        borderVisible="true"
+                        verticalScrollPolicy="on"
+                        width="100%"
+                        height="100%"
+                        />
+
         </s:VGroup>
 
     </s:HGroup>
