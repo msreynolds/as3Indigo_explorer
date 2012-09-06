@@ -10,6 +10,8 @@ package com.perceptiveautomation.indigo.device.view
     import com.mtnlabs.graphics.MountainLabsGraphics;
     import com.perceptiveautomation.indigo.device.IIndigoDevice;
     import com.perceptiveautomation.indigo.device.IIndigoDimmerDevice;
+    import com.perceptiveautomation.indigo.device.IIndigoDimmerDevice;
+    import com.perceptiveautomation.indigo.device.IIndigoOnOffDevice;
     import com.perceptiveautomation.indigo.device.IIndigoOnOffDevice;
 
     import flash.events.Event;
@@ -27,10 +29,10 @@ package com.perceptiveautomation.indigo.device.view
         private var _indigoDevice:IIndigoDevice;
 
         // Child Display Objects
-        private var _labelDeviceName:Label;
         private var _bitmapDeviceStatus:BitmapImage;
-        private var _nsValueStepper:NumericStepper;
-
+        private var _bitmapUp:BitmapImage;
+        private var _bitmapDown:BitmapImage;
+        private var _labelDeviceName:Label;
 
         public function IndigoDeviceListItemRenderer()
         {
@@ -64,29 +66,39 @@ package com.perceptiveautomation.indigo.device.view
             {
                 _bitmapDeviceStatus = new BitmapImage();
                 _bitmapDeviceStatus.source = MountainLabsGraphics.iconBulletRed;
-                _bitmapDeviceStatus.left = 7;
-                _bitmapDeviceStatus.top = 7;
+                _bitmapDeviceStatus.left = 3;
+                _bitmapDeviceStatus.top = 6;
+                _bitmapDeviceStatus.addEventListener(MouseEvent.CLICK, toggle);
                 this.addElement( _bitmapDeviceStatus );
+            }
+
+            if (!_bitmapUp)
+            {
+                _bitmapUp = new BitmapImage();
+                _bitmapUp.source = MountainLabsGraphics.iconBulletArrowUp;
+                _bitmapUp.left = 18;
+                _bitmapUp.top = 1;
+                _bitmapUp.addEventListener(MouseEvent.CLICK, brighten);
+                this.addElement( _bitmapUp );
+            }
+
+            if (!_bitmapDown)
+            {
+                _bitmapDown = new BitmapImage();
+                _bitmapDown.source = MountainLabsGraphics.iconBulletArrowDown;
+                _bitmapDown.left = 18;
+                _bitmapDown.bottom = 1;
+                _bitmapDown.addEventListener(MouseEvent.CLICK, dim);
+                this.addElement( _bitmapDown );
             }
 
             if (!_labelDeviceName)
             {
                 _labelDeviceName = new Label();
                 _labelDeviceName.text = (_indigoDevice !== null) ?_indigoDevice.name : "Name Not Available";
-                _labelDeviceName.left = 24;
+                _labelDeviceName.left = 36;
                 _labelDeviceName.top = 9;
                 this.addElement( _labelDeviceName );
-            }
-
-            if (!_nsValueStepper)
-            {
-                _nsValueStepper = new NumericStepper();
-                _nsValueStepper.minimum = 0;
-                _nsValueStepper.maximum = 100;
-                _nsValueStepper.width = 48;
-                _nsValueStepper.height = 21;
-                _nsValueStepper.top = 4;
-//                this.addElement(_nsValueStepper);
             }
         }
 
@@ -103,25 +115,26 @@ package com.perceptiveautomation.indigo.device.view
 
             if (_indigoDevice is IIndigoDimmerDevice)
             {
-                _nsValueStepper.includeInLayout = true;
-                _nsValueStepper.visible = true;
-                _nsValueStepper.left = _labelDeviceName.left + _labelDeviceName.width + 7;
+                _bitmapUp.alpha = 1;
+                _bitmapDown.alpha = 1;
             }
             else
             {
-                _nsValueStepper.includeInLayout = false;
-                _nsValueStepper.visible = false;
+                _bitmapUp.alpha = 0.15;
+                _bitmapDown.alpha = 0.15;
             }
         }
 
         protected function addDeviceListeners():void
         {
             _indigoDevice.addEventListener("isOnChanged", handleDevicePropertyChangeEvent);
+            _indigoDevice.addEventListener("brightnessChanged", handleDevicePropertyChangeEvent);
         }
 
         protected function removeDeviceListeners():void
         {
             _indigoDevice.removeEventListener("isOnChanged", handleDevicePropertyChangeEvent);
+            _indigoDevice.removeEventListener("brightnessChanged", handleDevicePropertyChangeEvent);
         }
 
         protected function handleDevicePropertyChangeEvent(event:Event):void
@@ -148,9 +161,24 @@ package com.perceptiveautomation.indigo.device.view
 
                 if (_indigoDevice is IIndigoDimmerDevice)
                 {
-                    _nsValueStepper.value = IIndigoDimmerDevice(_indigoDevice).brightness;
+                    this.toolTip = IIndigoDimmerDevice(_indigoDevice).brightness.toString();
                 }
             }
+        }
+
+        public function dim(event:Event):void
+        {
+            IIndigoDimmerDevice(_indigoDevice).brightness -= 1;
+        }
+
+        public function brighten(event:Event):void
+        {
+            IIndigoDimmerDevice(_indigoDevice).brightness += 1;
+        }
+
+        public function toggle(event:Event):void
+        {
+            IIndigoOnOffDevice(_indigoDevice).isOn ? IIndigoOnOffDevice(_indigoDevice).turnOff() : IIndigoOnOffDevice(_indigoDevice).turnOn();
         }
     }
 }

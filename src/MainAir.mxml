@@ -14,45 +14,32 @@
     <fx:Script><![CDATA[
         import com.mtnlabs.graphics.MountainLabsGraphics;
         import com.perceptiveautomation.indigo.IIndigoObject;
-        import com.perceptiveautomation.indigo.actiongroup.IIndigoActionGroup;
-        import com.perceptiveautomation.indigo.device.IIndigoDimmerDevice;
-        import com.perceptiveautomation.indigo.device.IIndigoOnOffDevice;
-        import com.perceptiveautomation.indigo.device.IIndigoThermostatDevice;
+        import com.perceptiveautomation.indigo.constants.IndigoAPIMode;
         import com.perceptiveautomation.indigo.model.IndigoModel;
-        import com.perceptiveautomation.indigo.trigger.IIndigoTrigger;
-        import com.perceptiveautomation.indigo.variable.IIndigoVariable;
         import com.perceptiveautomation.indigo.view.IndigoObjectDetailsDialog;
-        import com.perceptiveautomation.indigo.vo.IndigoLoginData;
 
         import mx.collections.ArrayCollection;
-
         import mx.events.CloseEvent;
-
-        import mx.events.FlexEvent;
-
         import mx.managers.PopUpManager;
 
-        import spark.components.Application;
-
+        import spark.events.IndexChangeEvent;
         import spark.events.ListEvent;
 
         [Bindable]
         protected var indigoModel:IndigoModel = IndigoModel.getInstance();
 
-        [Bindable]
-        protected var indigoLoginData:IndigoLoginData = new IndigoLoginData("localhost");
-
         protected function creationComplete():void
         {
-            listIndigoDevices.addEventListener("showItemDetail", list_doubleClickHandler);
-            listIndigoVariables.addEventListener("showItemDetail", list_doubleClickHandler);
             listIndigoActionGroups.addEventListener("showItemDetail", list_doubleClickHandler);
+            listIndigoDevices.addEventListener("showItemDetail", list_doubleClickHandler);
+            listIndigoSchedules.addEventListener("showItemDetail", list_doubleClickHandler);
             listIndigoTriggers.addEventListener("showItemDetail", list_doubleClickHandler);
+            listIndigoVariables.addEventListener("showItemDetail", list_doubleClickHandler);
         }
 
         protected function btnIndigoConnect_clickHandler(event:MouseEvent):void
         {
-            indigoService.connect(indigoLoginData);
+            indigoService.connect(tiIndigoHost.text, tiIndigoHostPort.text, tiUsername.text, tiPassword.text);
         }
 
         protected function list_doubleClickHandler(event:ListEvent):void
@@ -110,6 +97,10 @@
             this.indigoService.refreshTriggers();
         }
 
+        protected function ddlAPIChoice_changeHandler(event:IndexChangeEvent):void
+        {
+            this.indigoService.apiMode = ddlAPIChoice.selectedItem;
+        }
         ]]></fx:Script>
 
     <fx:Style source="default.css"/>
@@ -131,16 +122,17 @@
         <s:HGroup horizontalAlign="right" verticalAlign="baseline">
             <s:Label text="API" />
             <s:DropDownList id="ddlAPIChoice"
-                            dataProvider="{new ArrayCollection(['Socket','RESTful'])}"
+                            dataProvider="{new ArrayCollection([IndigoAPIMode.INDIGO_API_MODE_SOCKET,IndigoAPIMode.INDIGO_API_MODE_RESTFUL])}"
                             selectedIndex="0"
+                            change="ddlAPIChoice_changeHandler(event)"
                             />
 
         </s:HGroup>
         <!--<s:Label text="Indigo Server"/> -->
-        <s:TextInput id="tiUsername" width="80" prompt="Username" text="{indigoLoginData.username}"/>
-        <s:TextInput id="tiPassword" width="80" prompt="Password" text="{indigoLoginData.password}"/>
-        <s:TextInput id="tiIndigoServerAddress" width="135" prompt="Indigo Server Address" text="{indigoLoginData.host}"/>
-        <s:TextInput id="tiIndigoServerPort" width="48" prompt="Port" text="{indigoLoginData.port}"/>
+        <s:TextInput id="tiUsername" width="80" prompt="Username" text="{indigoModel.username}"/>
+        <s:TextInput id="tiPassword" width="80" prompt="Password" text="{indigoModel.password}"/>
+        <s:TextInput id="tiIndigoHost" width="135" prompt="Indigo Server Address" text="http://reynolds.mtnlabs.com"/>
+        <s:TextInput id="tiIndigoHostPort" width="48" prompt="Port" text="{indigoModel.port}"/>
         <s:Button id="btnIndigoConnect" click="btnIndigoConnect_clickHandler(event)" label="Go!"/>
 
     </s:HGroup>

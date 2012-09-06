@@ -15,9 +15,12 @@
         import com.perceptiveautomation.indigo.device.IIndigoOnOffDevice;
         import com.perceptiveautomation.indigo.device.IIndigoThermostatDevice;
         import com.perceptiveautomation.indigo.model.IndigoModel;
+        import com.perceptiveautomation.indigo.schedule.IIndigoSchedule;
         import com.perceptiveautomation.indigo.services.IndigoService;
         import com.perceptiveautomation.indigo.trigger.IIndigoTrigger;
         import com.perceptiveautomation.indigo.variable.IIndigoVariable;
+
+        import mx.binding.utils.BindingUtils;
 
         import mx.events.FlexEvent;
 
@@ -60,11 +63,19 @@
 
         protected function updateView():void
         {
+            if (indigoObject is IIndigoActionGroup)
+            {
+                currentState = "actiongroup";
+                return;
+            }
+
             if (indigoObject is IIndigoDimmerDevice)
             {
                 currentState = "dimmerdevice";
                 if (hslideDimmerValue != null)
+                {
                     hslideDimmerValue.value = IIndigoDimmerDevice(indigoObject).brightness;
+                }
 
                 return;
             }
@@ -81,23 +92,9 @@
                 return;
             }
 
-            if (indigoObject is IIndigoVariable)
+            if (indigoObject is IIndigoSchedule)
             {
-                currentState = "variable";
-
-                if (lblVariableName)
-                    lblVariableName.text = IIndigoVariable(indigoObject).name;
-
-                if (tiVariableValue)
-                    tiVariableValue.text = IIndigoVariable(indigoObject).value.toString();
-
-                return;
-            }
-
-            if (indigoObject is IIndigoActionGroup)
-            {
-                currentState = "actiongroup";
-                return;
+                currentState = "schedule";
             }
 
             if (indigoObject is IIndigoTrigger)
@@ -106,20 +103,40 @@
                 return;
             }
 
+            if (indigoObject is IIndigoVariable)
+            {
+                currentState = "variable";
+
+                if (lblVariableName)
+                {
+                    lblVariableName.text = IIndigoVariable(indigoObject).name;
+                }
+
+                if (tiVariableValue)
+                {
+                    tiVariableValue.text = IIndigoVariable(indigoObject).value.toString();
+                }
+
+                return;
+            }
         }
 
         protected function btnOff_clickHandler(event:MouseEvent):void
         {
             IIndigoOnOffDevice(indigoObject).turnOff();
             if (hslideDimmerValue !== null)
+            {
                 hslideDimmerValue.value = 0;
+            }
         }
 
         protected function btnOn_clickHandler(event:MouseEvent):void
         {
             IIndigoOnOffDevice(indigoObject).turnOn();
             if (hslideDimmerValue !== null)
+            {
                 hslideDimmerValue.value = 100;
+            }
         }
 
         protected function hslideDimmerValue_clickHandler(event:MouseEvent):void
@@ -130,11 +147,17 @@
         protected function btnSaveVariable_clickHandler(event:MouseEvent):void
         {
             IIndigoVariable(indigoObject).value = tiVariableValue.text;
+            this.closeButton_clickHandler(null);
         }
 
         protected function creationCompleteHandler(event:FlexEvent):void
         {
             updateView();
+        }
+
+        protected function btnRunNow_clickHandler(event:MouseEvent):void
+        {
+            IIndigoActionGroup(indigoObject).runNow();
         }
         ]]>
     </fx:Script>
@@ -199,6 +222,21 @@
                       click="btnSaveVariable_clickHandler(event)"
                       />
         </s:HGroup>
+
+        <s:HGroup includeIn="actiongroup">
+
+            <s:Button id="btnRunNow"
+                      includeIn="actiongroup"
+                      label="Run Now"
+                      click="btnRunNow_clickHandler(event)"
+                    />
+        </s:HGroup>
+
+        <s:Form includeIn="schedule">
+            <s:FormItem label="Name"><s:Label id="labelScheduleName" text="{indigoObject['name']}"/> </s:FormItem>
+            <s:FormItem label="Next Run"><s:Label id="labelScheduleNextRun" text="{indigoObject['nextExecuteDate']}"/> </s:FormItem>
+            <s:FormItem label="Description"><s:Label id="labelScheduleDescription" text="{indigoObject['description']}"/> </s:FormItem>
+        </s:Form>
 
     </s:VGroup>
 

@@ -9,7 +9,9 @@ package com.perceptiveautomation.indigo.actiongroup.view {
     import com.mtnlabs.graphics.MountainLabsGraphics;
     import com.perceptiveautomation.indigo.actiongroup.IIndigoActionGroup;
 
-import flash.events.MouseEvent;
+    import flash.events.Event;
+
+    import flash.events.MouseEvent;
 
     import spark.components.Button;
 
@@ -37,7 +39,7 @@ public class IndigoActionGroupListItemRenderer extends ItemRenderer
 
     override public function set data(value:Object):void
     {
-
+        super.data = value;
         if (value is IIndigoActionGroup) {
             _indigoActionGroup = value as IIndigoActionGroup;
         }
@@ -50,13 +52,14 @@ public class IndigoActionGroupListItemRenderer extends ItemRenderer
         if (!_buttonActionGroupRun)
         {
             _buttonActionGroupRun = new  Button();
-            _buttonActionGroupRun.setStyle('icon', MountainLabsGraphics.iconCogGo);
+            _buttonActionGroupRun.setStyle('icon', MountainLabsGraphics.iconBulletGo);
             _buttonActionGroupRun.styleName = "linkButton";
             _buttonActionGroupRun.width = 18;
             _buttonActionGroupRun.height = 18;
             _buttonActionGroupRun.left = 7;
             _buttonActionGroupRun.top = 5;
             _buttonActionGroupRun.toolTip = "Run Action Group Now";
+            _buttonActionGroupRun.addEventListener(MouseEvent.CLICK, run);
             this.addElement( _buttonActionGroupRun );
         }
 
@@ -103,5 +106,9 @@ public class IndigoActionGroupListItemRenderer extends ItemRenderer
         this.owner.dispatchEvent(listEvent);
     }
 
+    protected function run(event:Event):void
+    {
+        _indigoActionGroup.runNow();
+    }
 }
 }
