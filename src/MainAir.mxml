@@ -39,7 +39,7 @@
 
         protected function btnIndigoConnect_clickHandler(event:MouseEvent):void
         {
-            indigoService.connect(tiIndigoHost.text, tiIndigoHostPort.text, tiUsername.text, tiPassword.text);
+            indigoService.connect(tiIndigoHost.text, cbIndigoHostPort.selectedItem, tiUsername.text, tiPassword.text);
         }
 
         protected function list_doubleClickHandler(event:ListEvent):void
@@ -132,7 +132,7 @@
         <s:TextInput id="tiUsername" width="80" prompt="Username" text="{indigoModel.username}"/>
         <s:TextInput id="tiPassword" width="80" prompt="Password" text="{indigoModel.password}"/>
         <s:TextInput id="tiIndigoHost" width="135" prompt="Indigo Server Address" text="http://reynolds.mtnlabs.com"/>
-        <s:TextInput id="tiIndigoHostPort" width="48" prompt="Port" text="{indigoModel.port}"/>
+        <s:ComboBox id="cbIndigoHostPort" width="88" prompt="Port" dataProvider="{new ArrayCollection(['1176','8176'])}"/>
         <s:Button id="btnIndigoConnect" click="btnIndigoConnect_clickHandler(event)" label="Go!"/>
 
     </s:HGroup>
@@ -212,7 +212,7 @@
                     />
         </s:VGroup>
 
-        <s:VGroup width="20%" height="100%">
+        <s:VGroup width="20%" height="100%" enabled="{ddlAPIChoice.selectedItem == IndigoAPIMode.INDIGO_API_MODE_SOCKET}">
             <s:HGroup width="100%" horizontalAlign="left" verticalAlign="baseline" paddingLeft="3" gap="3">
                 <s:Label text="{'Indigo Schedules (' + listIndigoSchedules.dataProvider.length + ')'}"/>
                 <s:Button id="btnSchedulesRefresh"
@@ -233,7 +233,7 @@
                     />
         </s:VGroup>
 
-        <s:VGroup width="20%" height="100%">
+        <s:VGroup width="20%" height="100%" enabled="{ddlAPIChoice.selectedItem == IndigoAPIMode.INDIGO_API_MODE_SOCKET}">
             <s:HGroup width="100%" horizontalAlign="left" verticalAlign="baseline" paddingLeft="3" gap="3">
                 <s:Label text="{'Indigo Triggers (' + listIndigoTriggers.dataProvider.length + ')'}"/>
                 <s:Button id="btnTriggerRefresh"
