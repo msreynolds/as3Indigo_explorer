@@ -12,7 +12,7 @@
         >
 
     <fx:Script><![CDATA[
-        import com.mtnlabs.graphics.MountainLabsGraphics;
+        import As3IndigoExplorerGraphics;
         import com.perceptiveautomation.indigo.IIndigoObject;
         import com.perceptiveautomation.indigo.constants.IndigoAPIMode;
         import com.perceptiveautomation.indigo.model.IndigoModel;
@@ -70,6 +70,31 @@
             this.indigoModel.logStream = "";
         }
 
+        // Clear Lists
+        protected function btnClearDevices_clickHandler(event:MouseEvent):void
+        {
+            indigoService.removeAllDevices();
+        }
+
+        protected function btnClearActionGroups_clickHandler(event:MouseEvent):void
+        {
+            indigoService.removeAllActionGroups();
+        }
+
+        protected function btnClearSchedules_clickHandler(event:MouseEvent):void
+        {
+            indigoService.removeAllSchedules();
+        }
+
+        protected function btnClearTriggers_clickHandler(event:MouseEvent):void
+        {
+            indigoService.removeAllTriggers();
+        }
+
+        protected function btnClearVariables_clickHandler(event:MouseEvent):void
+        {
+            indigoService.removeAllVariables();
+        }
 
         // Refresh Lists
         protected function btnDevicesRefresh_clickHandler(event:MouseEvent):void
@@ -101,6 +126,8 @@
         {
             this.indigoService.apiMode = ddlAPIChoice.selectedItem;
         }
+
+
         ]]></fx:Script>
 
     <fx:Style source="default.css"/>
@@ -150,8 +177,17 @@
         <s:VGroup width="20%" height="100%">
             <s:HGroup width="100%" horizontalAlign="left" verticalAlign="baseline" paddingLeft="3" gap="3">
                 <s:Label text="{'Indigo Devices (' + listIndigoDevices.dataProvider.length + ')'}"/>
+                <s:Button id="btnClearDevices"
+                          icon="{As3IndigoExplorerGraphics.iconBinClosed}"
+                          styleName="linkButton"
+                          width="21"
+                          height="21"
+                          baseline="6"
+                          toolTip="Remove All Devices"
+                          click="btnClearDevices_clickHandler(event)"
+                        />
                 <s:Button id="btnDevicesRefresh"
-                          icon="{MountainLabsGraphics.iconArrowRefresh}"
+                          icon="{As3IndigoExplorerGraphics.iconArrowRefresh}"
                           styleName="linkButton"
                           width="21"
                           height="21"
@@ -173,8 +209,17 @@
         <s:VGroup width="20%" height="100%">
             <s:HGroup width="100%" horizontalAlign="left" verticalAlign="baseline" paddingLeft="3" gap="3">
                 <s:Label text="{'Indigo Variables (' + listIndigoVariables.dataProvider.length + ')'}"/>
+                <s:Button id="btnClearVariables"
+                          icon="{As3IndigoExplorerGraphics.iconBinClosed}"
+                          styleName="linkButton"
+                          width="21"
+                          height="21"
+                          baseline="6"
+                          toolTip="Remove All Variables"
+                          click="btnClearVariables_clickHandler(event)"
+                        />
                 <s:Button id="btnVariablesRefresh"
-                          icon="{MountainLabsGraphics.iconArrowRefresh}"
+                          icon="{As3IndigoExplorerGraphics.iconArrowRefresh}"
                           styleName="linkButton"
                           width="21"
                           height="21"
@@ -194,8 +239,19 @@
         <s:VGroup width="20%" height="100%">
             <s:HGroup width="100%" horizontalAlign="left" verticalAlign="baseline" paddingLeft="3" gap="3">
                 <s:Label text="{'Indigo Action Groups (' + listIndigoActionGroups.dataProvider.length + ')'}"/>
+
+                <s:Button id="btnClearActionGroups"
+                          icon="{As3IndigoExplorerGraphics.iconBinClosed}"
+                          styleName="linkButton"
+                          width="21"
+                          height="21"
+                          baseline="6"
+                          toolTip="Remove All Action Groups"
+                          click="btnClearActionGroups_clickHandler(event)"
+                        />
+
                 <s:Button id="btnActionGroupsRefresh"
-                          icon="{MountainLabsGraphics.iconArrowRefresh}"
+                          icon="{As3IndigoExplorerGraphics.iconArrowRefresh}"
                           styleName="linkButton"
                           width="21"
                           height="21"
@@ -215,8 +271,17 @@
         <s:VGroup width="20%" height="100%" enabled="{ddlAPIChoice.selectedItem == IndigoAPIMode.INDIGO_API_MODE_SOCKET}">
             <s:HGroup width="100%" horizontalAlign="left" verticalAlign="baseline" paddingLeft="3" gap="3">
                 <s:Label text="{'Indigo Schedules (' + listIndigoSchedules.dataProvider.length + ')'}"/>
+                <s:Button id="btnClearSchedules"
+                          icon="{As3IndigoExplorerGraphics.iconBinClosed}"
+                          styleName="linkButton"
+                          width="21"
+                          height="21"
+                          baseline="6"
+                          toolTip="Remove All Schedules"
+                          click="btnClearSchedules_clickHandler(event)"
+                        />
                 <s:Button id="btnSchedulesRefresh"
-                          icon="{MountainLabsGraphics.iconArrowRefresh}"
+                          icon="{As3IndigoExplorerGraphics.iconArrowRefresh}"
                           styleName="linkButton"
                           width="21"
                           height="21"
@@ -236,8 +301,17 @@
         <s:VGroup width="20%" height="100%" enabled="{ddlAPIChoice.selectedItem == IndigoAPIMode.INDIGO_API_MODE_SOCKET}">
             <s:HGroup width="100%" horizontalAlign="left" verticalAlign="baseline" paddingLeft="3" gap="3">
                 <s:Label text="{'Indigo Triggers (' + listIndigoTriggers.dataProvider.length + ')'}"/>
+                <s:Button id="btnClearTrigger"
+                          icon="{As3IndigoExplorerGraphics.iconBinClosed}"
+                          styleName="linkButton"
+                          width="21"
+                          height="21"
+                          baseline="6"
+                          toolTip="Remove All Trigger"
+                          click="btnClearTriggers_clickHandler(event)"
+                        />
                 <s:Button id="btnTriggerRefresh"
-                          icon="{MountainLabsGraphics.iconArrowRefresh}"
+                          icon="{As3IndigoExplorerGraphics.iconArrowRefresh}"
                           styleName="linkButton"
                           width="21"
                           height="21"
@@ -263,13 +337,14 @@
         <s:VGroup id="vGroupLog"
                   width="300"
                   height="100%"
+                  enabled="{ddlAPIChoice.selectedItem == IndigoAPIMode.INDIGO_API_MODE_SOCKET}"
                   >
 
             <s:HGroup width="100%" horizontalAlign="left" verticalAlign="baseline" paddingLeft="3" gap="3">
 
                 <s:Label text="Indigo Log"/>
                 <s:Button id="btnClearLog"
-                          icon="{MountainLabsGraphics.iconBinClosed}"
+                          icon="{As3IndigoExplorerGraphics.iconBinClosed}"
                           styleName="linkButton"
                           width="21"
                           height="21"
@@ -300,7 +375,7 @@
 
                 <s:Label text="Outgoing Indigo Packets"/>
                 <s:Button id="btnClearOutgoingPackets"
-                          icon="{MountainLabsGraphics.iconBinClosed}"
+                          icon="{As3IndigoExplorerGraphics.iconBinClosed}"
                           styleName="linkButton"
                           width="21"
                           height="21"
@@ -330,7 +405,7 @@
 
                 <s:Label text="Incoming Indigo Packets"/>
                 <s:Button id="btnClearPackets"
-                          icon="{MountainLabsGraphics.iconBinClosed}"
+                          icon="{As3IndigoExplorerGraphics.iconBinClosed}"
                           styleName="linkButton"
                           width="21"
                           height="21"

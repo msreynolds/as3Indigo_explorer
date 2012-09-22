@@ -6,7 +6,7 @@
  * To change this template use File | Settings | File Templates.
  */
 package com.perceptiveautomation.indigo.actiongroup.view {
-    import com.mtnlabs.graphics.MountainLabsGraphics;
+    import As3IndigoExplorerGraphics;
     import com.perceptiveautomation.indigo.actiongroup.IIndigoActionGroup;
 
     import flash.events.Event;
@@ -52,7 +52,7 @@ public class IndigoActionGroupListItemRenderer extends ItemRenderer
         if (!_buttonActionGroupRun)
         {
             _buttonActionGroupRun = new  Button();
-            _buttonActionGroupRun.setStyle('icon', MountainLabsGraphics.iconBulletGo);
+            _buttonActionGroupRun.setStyle('icon', As3IndigoExplorerGraphics.iconBulletGo);
             _buttonActionGroupRun.styleName = "linkButton";
             _buttonActionGroupRun.width = 18;
             _buttonActionGroupRun.height = 18;

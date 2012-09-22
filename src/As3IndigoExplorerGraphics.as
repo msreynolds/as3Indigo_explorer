@@ -8,34 +8,34 @@
 package {
     public class As3IndigoExplorerGraphics
     {
-        [Embed("/assets/icons/famfamfam/arrow_refresh.png")]
+        [Embed("/assets/icons/arrow_refresh.png")]
         public static const iconArrowRefresh:Class;
 
-        [Embed("/assets/icons/famfamfam/bin.png")]
+        [Embed("/assets/icons/bin.png")]
         public static const iconBin:Class;
 
-        [Embed("/assets/icons/famfamfam/bin_closed.png")]
+        [Embed("/assets/icons/bin_closed.png")]
         public static const iconBinClosed:Class;
 
-        [Embed("/assets/icons/famfamfam/bin_empty.png")]
+        [Embed("/assets/icons/bin_empty.png")]
         public static const iconBinEmpty:Class;
 
-        [Embed("/assets/icons/famfamfam/bullet_arrow_down.png")]
+        [Embed("/assets/icons/bullet_arrow_down.png")]
         public static const iconBulletArrowDown:Class;
 
-        [Embed("/assets/icons/famfamfam/bullet_arrow_up.png")]
+        [Embed("/assets/icons/bullet_arrow_up.png")]
         public static const iconBulletArrowUp:Class;
 
-        [Embed("/assets/icons/famfamfam/bullet_red.png")]
+        [Embed("/assets/icons/bullet_red.png")]
         public static const iconBulletRed:Class;
 
-        [Embed("/assets/icons/famfamfam/bullet_green.png")]
+        [Embed("/assets/icons/bullet_green.png")]
         public static const iconBulletGreen:Class;
 
-        [Embed("/assets/icons/famfamfam/bullet_go.png")]
+        [Embed("/assets/icons/bullet_go.png")]
         public static const iconBulletGo:Class;
 
-        [Embed("/assets/icons/famfamfam/cog_go.png")]
+        [Embed("/assets/icons/cog_go.png")]
         public static const iconCogGo:Class;
     }
 }

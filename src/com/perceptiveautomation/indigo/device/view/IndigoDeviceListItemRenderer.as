@@ -7,7 +7,7 @@
  */
 package com.perceptiveautomation.indigo.device.view
 {
-    import com.mtnlabs.graphics.MountainLabsGraphics;
+    import As3IndigoExplorerGraphics;
     import com.perceptiveautomation.indigo.device.IIndigoDevice;
     import com.perceptiveautomation.indigo.device.IIndigoDimmerDevice;
     import com.perceptiveautomation.indigo.device.IIndigoDimmerDevice;
@@ -65,7 +65,7 @@ package com.perceptiveautomation.indigo.device.view
             if (!_bitmapDeviceStatus)
             {
                 _bitmapDeviceStatus = new BitmapImage();
-                _bitmapDeviceStatus.source = MountainLabsGraphics.iconBulletRed;
+                _bitmapDeviceStatus.source = As3IndigoExplorerGraphics.iconBulletRed;
                 _bitmapDeviceStatus.left = 3;
                 _bitmapDeviceStatus.top = 6;
                 _bitmapDeviceStatus.addEventListener(MouseEvent.CLICK, toggle);
@@ -75,7 +75,7 @@ package com.perceptiveautomation.indigo.device.view
             if (!_bitmapUp)
             {
                 _bitmapUp = new BitmapImage();
-                _bitmapUp.source = MountainLabsGraphics.iconBulletArrowUp;
+                _bitmapUp.source = As3IndigoExplorerGraphics.iconBulletArrowUp;
                 _bitmapUp.left = 18;
                 _bitmapUp.top = 1;
                 _bitmapUp.addEventListener(MouseEvent.CLICK, brighten);
@@ -85,7 +85,7 @@ package com.perceptiveautomation.indigo.device.view
             if (!_bitmapDown)
             {
                 _bitmapDown = new BitmapImage();
-                _bitmapDown.source = MountainLabsGraphics.iconBulletArrowDown;
+                _bitmapDown.source = As3IndigoExplorerGraphics.iconBulletArrowDown;
                 _bitmapDown.left = 18;
                 _bitmapDown.bottom = 1;
                 _bitmapDown.addEventListener(MouseEvent.CLICK, dim);
@@ -156,7 +156,7 @@ package com.perceptiveautomation.indigo.device.view
 
                 if (_indigoDevice is IIndigoOnOffDevice)
                 {
-                    _bitmapDeviceStatus.source = (IIndigoOnOffDevice(_indigoDevice).isOn) ? MountainLabsGraphics.iconBulletGreen : MountainLabsGraphics.iconBulletRed;
+                    _bitmapDeviceStatus.source = (IIndigoOnOffDevice(_indigoDevice).isOn) ? As3IndigoExplorerGraphics.iconBulletGreen : As3IndigoExplorerGraphics.iconBulletRed;
                 }
 
                 if (_indigoDevice is IIndigoDimmerDevice)
