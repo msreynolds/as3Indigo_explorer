@@ -9,7 +9,7 @@
               <dependency linkage="Merged" />
             </entry>
             <entry library-name="as3Indigo" library-level="project">
-              <dependency linkage="Merged" />
+              <dependency linkage="Include" />
             </entry>
           </entries>
           <sdk name="4.6.0" />
@@ -45,6 +45,7 @@
       </library>
     </orderEntry>
     <orderEntry type="library" name="as3Indigo" level="project" />
+    <orderEntry type="library" name="mtn_graphics" level="application" />
   </component>
 </module>
 
