@@ -12,7 +12,6 @@
         >
 
     <fx:Script><![CDATA[
-        import As3IndigoExplorerGraphics;
         import com.perceptiveautomation.indigo.IIndigoObject;
         import com.perceptiveautomation.indigo.constants.IndigoAPIMode;
         import com.perceptiveautomation.indigo.model.IndigoModel;
@@ -126,8 +125,6 @@
         {
             this.indigoService.apiMode = ddlAPIChoice.selectedItem;
         }
-
-
         ]]></fx:Script>
 
     <fx:Style source="default.css"/>
